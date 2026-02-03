@@ -1,1 +1,14 @@
 TODO.md
+
+# Build artifacts
+build/
+*.o
+*.so
+*.a
+
+# Compiled binaries
+*.out
+*.hip
+*.exe
+
+CMakeLists.txt
