@@ -1,8 +1,6 @@
 #include <torch/extension.h>
 
 
-// Each thread loads one RGBA pixel as a single uchar4 (32-bit / 4-byte transaction)
-// instead of 3 separate byte loads for RGB — better memory coalescing.
 __global__
 void rgb_to_grayscale_kernel(
     unsigned char* __restrict__ output,
@@ -13,9 +11,12 @@ void rgb_to_grayscale_kernel(
     int row = blockIdx.y * blockDim.y + threadIdx.y;
     if (col < width && row < height) {
         int i = row * width + col;
-        uchar4 px = reinterpret_cast<const uchar4*>(input)[i];  // 128-bit load (4 bytes)
+        int inputOffset = i * 3;
+        unsigned char r = input[inputOffset + 0];
+        unsigned char g = input[inputOffset + 1];
+        unsigned char b = input[inputOffset + 2];
         // ITU-R BT.709 luminance coefficients
-        output[i] = (unsigned char)(0.2126f * px.x + 0.7152f * px.y + 0.0722f * px.z);
+        output[i] = (unsigned char)(0.2126f * r + 0.7152f * g + 0.0722f * b);
     }
 }
 
@@ -26,10 +27,10 @@ inline unsigned int cdiv(unsigned int a, unsigned int b) {
 
 
 torch::Tensor rgb_to_grayscale(torch::Tensor image) {
-    // image: (H, W, 4) uint8 RGBA, CUDA
+    // image: (H, W, 3) uint8 RGB, CUDA
     TORCH_CHECK(image.device().type() == torch::kCUDA);
     TORCH_CHECK(image.dtype() == torch::kByte);
-    TORCH_CHECK(image.size(2) == 4, "Expected RGBA input (4 channels)");
+    TORCH_CHECK(image.size(2) == 3, "Expected RGB input (3 channels)");
 
     const auto height = image.size(0);
     const auto width  = image.size(1);
