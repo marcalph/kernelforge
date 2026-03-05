@@ -43,7 +43,7 @@ torch::Tensor rgb_to_grayscale(torch::Tensor image) {
     dim3 number_of_blocks(cdiv(width, threads_per_block.x),
                           cdiv(height, threads_per_block.y));
 
-    rgb_to_grayscale_kernel<<<number_of_blocks, threads_per_block, 0, torch::cuda::getCurrentCUDAStream()>>>(
+    rgb_to_grayscale_kernel<<<number_of_blocks, threads_per_block>>>(
         result.data_ptr<unsigned char>(),
         image.data_ptr<unsigned char>(),
         width,
