@@ -1,5 +1,12 @@
 #include <c10/cuda/CUDAException.h>
 #include <c10/cuda/CUDAStream.h>
+#include <torch/extension.h>
+
+#define CHECK_CUDA(x) TORCH_CHECK(x.device().is_cuda(), #x " must be a CUDA tensor")
+#define CHECK_CONTIGUOUS(x) TORCH_CHECK(x.is_contiguous(), #x " must be contiguous")
+#define CHECK_INPUT(x) CHECK_CUDA(x); CHECK_CONTIGUOUS(x)
+
+inline unsigned int cdiv(unsigned int a, unsigned int b) { return (a + b - 1) / b;}
 
 
 __global__
@@ -16,21 +23,17 @@ void rgb_to_grayscale_kernel(unsigned char* output, unsigned char* input, int wi
         unsigned char g = input[inputOffset + 1];   // green
         unsigned char b = input[inputOffset + 2];   // blue
 
-        output[outputOffset] = (unsigned char)(0.21f * r + 0.71f * g + 0.07f * b);
+        output[outputOffset] = (unsigned char)(0.299f * r + 0.587f * g + 0.114f * b);
     }
 }
 
-
-// helper function for ceiling unsigned integer division
-inline unsigned int cdiv(unsigned int a, unsigned int b) {
-  return (a + b - 1) / b;
-}
 
 
 torch::Tensor rgb_to_grayscale(torch::Tensor image) {
     assert(image.device().type() == torch::kCUDA);
     assert(image.dtype() == torch::kByte);
-
+    
+    CHECK_INPUT(image)
     const auto height = image.size(0);
     const auto width = image.size(1);
 
