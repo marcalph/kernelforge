@@ -3,13 +3,15 @@ from pathlib import Path
 
 def compile_extension(cuda_source = "kernelforge/src/kernels/grayscale.cu",
     cpp_source = "torch::Tensor rgb_to_grayscale(torch::Tensor image);"):
-    cuda_source = Path(cuda_source).read_text()
+    cuda_source = Path(cuda_source)
+    name = cuda_source.stem
+    cuda_source = cuda_source.read_text()
 
     return load_inline(
-        name="rgb_to_grayscale_extension",
+        name=name,
         cpp_sources=cpp_source,
         cuda_sources=cuda_source,
-        functions=["rgb_to_grayscale"],
+        functions=[name],
         with_cuda=True,
         extra_cuda_cflags=["-O2"],
         verbose=True,

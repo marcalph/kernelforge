@@ -29,7 +29,7 @@ void rgb_to_grayscale_kernel(unsigned char* output, unsigned char* input, int wi
 
 
 
-torch::Tensor rgb_to_grayscale(torch::Tensor image) {
+torch::Tensor grayscale(torch::Tensor image) {
     assert(image.device().type() == torch::kCUDA);
     assert(image.dtype() == torch::kByte);
     
