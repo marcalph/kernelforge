@@ -1,0 +1,16 @@
+from torch.utils.cpp_extension import load_inline
+from pathlib import Path
+
+def compile_extension(cuda_source = "kernelforge/src/kernels/grayscale.cu",
+    cpp_source = "torch::Tensor rgb_to_grayscale(torch::Tensor image);"):
+    cuda_source = Path(cuda_source).read_text()
+
+    return load_inline(
+        name="rgb_to_grayscale_extension",
+        cpp_sources=cpp_source,
+        cuda_sources=cuda_source,
+        functions=["rgb_to_grayscale"],
+        with_cuda=True,
+        extra_cuda_cflags=["-O2"],
+        verbose=True,
+    )
