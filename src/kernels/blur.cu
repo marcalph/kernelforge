@@ -16,7 +16,7 @@ void blur_kernel(unsigned char* output, unsigned char* input, int width, int hei
 
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int row = blockIdx.y * blockDim.y + threadIdx.y;
-    int linOffset = height*width;
+    int linOffset = height*width*channels;
 
     if (col < width && row < height) {
         int pixVal = 0;
