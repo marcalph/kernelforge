@@ -35,7 +35,7 @@ def main(ext):
 
     assert x.dtype == torch.uint8
 
-    y = ext.rgb_to_grayscale(x)
+    y = ext.grayscale(x)
 
     print("Output image:", y.shape, y.dtype, "mean:", y.float().mean().item())
     return y.cpu()
