@@ -21,4 +21,4 @@ def main(ext):
     y = ext.blur(x, 8)
 
     print("Output image:", y.shape, y.dtype, "mean:", y.float().mean().item())
-    write_png(y.permute(2, 0, 1).cpu(), "pisco_blur.png")
+    return y.cpu()
