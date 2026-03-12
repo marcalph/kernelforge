@@ -16,24 +16,26 @@ void blur_kernel(unsigned char* output, unsigned char* input, int width, int hei
 
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int row = blockIdx.y * blockDim.y + threadIdx.y;
-    int linOffset = height*width*channels;
-
     if (col < width && row < height) {
-        int pixVal = 0;
-        int pixels = 0;
+        int offset = (row * width + col) * channels;
+        for (int c = 0; c < channels; c++) {
+            int pixVal = 0;
+            int pixels = 0;
 
-        for (int blurRow=-radius; blurRow<=radius; blurRow++){
-            for (int blurCol=-radius; blurCol<=radius; blurCol++){
-                int curRow = row+blurRow;
-                int curCol = col+blurCol;
-                if (curRow >= 0 && curRow < height && curCol >=0 && curCol < width) {
-                    pixVal += input[linOffset + curRow * width + curCol];
-                    pixels += 1;
+            for (int blurRow = -radius; blurRow <= radius; blurRow++) {
+                for (int blurCol = -radius; blurCol <= radius; blurCol++) {
+                    int curRow = row + blurRow;
+                    int curCol = col + blurCol;
+                    if (curRow >= 0 && curRow < height && curCol >= 0 && curCol < width) {
+                        int inputOffset = (curRow * width + curCol) * channels + c;
+                        pixVal += input[inputOffset];
+                        pixels += 1;
+                    }
                 }
             }
-        }
 
-        output[linOffset + row * width + col] = (unsigned char)(pixVal / pixels);
+            output[offset + c] = (unsigned char)(pixVal / pixels);
+        }
     }
 }
 
