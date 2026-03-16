@@ -9,7 +9,7 @@
 inline unsigned int cdiv(unsigned int a, unsigned int b) { return (a + b - 1) / b;}
 
 __global__
-void matmul_k(float *m, float *n, float * out, int k) {
+void matmul_k(float *m, float *n, float * out, int h, int, w, int k) {
     int r = blockIdx.y * blockDim.y + threadIdx.y;
     int c = blockIdx.x * blockDim.x + threadIdx.x;
 
@@ -40,7 +40,7 @@ torch::Tensor matmul(torch::Tensor m, torch::Tensor n) {
 
     // Launch CUDA kernel
     matmul_k<<<blocks, tpb>>>(
-        m.data_ptr<float>(), n.data_ptr<float>(), output.data_ptr<float>(), k);
+        m.data_ptr<float>(), n.data_ptr<float>(), output.data_ptr<float>(), i, j, k);
 
         // Check for CUDA errors
     C10_CUDA_KERNEL_LAUNCH_CHECK();
