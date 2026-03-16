@@ -36,7 +36,7 @@ torch::Tensor matmul(torch::Tensor m, torch::Tensor n) {
 
     // Define thread block and grid dimensions
     dim3 tpb(16, 16);
-    dim3 blocks(cdiv(w, tpb.x), cdiv(h, tpb.y));
+    dim3 blocks(cdiv(j, tpb.x), cdiv(i, tpb.y));
 
     // Launch CUDA kernel
     matmul_k<<<blocks, tpb>>>(
