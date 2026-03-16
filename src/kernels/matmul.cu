@@ -9,7 +9,7 @@
 inline unsigned int cdiv(unsigned int a, unsigned int b) { return (a + b - 1) / b;}
 
 __global__
-void matmul_k(float *m, float *n, float * out, int h, int, w, int k) {
+void matmul_k(float *m, float *n, float * out, int h, int w, int k) {
     int r = blockIdx.y * blockDim.y + threadIdx.y;
     int c = blockIdx.x * blockDim.x + threadIdx.x;
 
