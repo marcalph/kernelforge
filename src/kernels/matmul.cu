@@ -16,7 +16,7 @@ void matmul_k(float *m, float *n, float * out, int h, int w, int k) {
     if (r>=h || c>= w) return; // out of bound
     float dotval=0;
     for (int i=0;i<k;i++){
-        dotval+= m[r*k+i] * n[i*z+c];
+        dotval+= m[r*k+i] * n[i*w+c];
     }
     out[r*w+c]=dotval;
 }
