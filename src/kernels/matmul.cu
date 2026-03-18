@@ -24,13 +24,13 @@ void matmul_k(float *m, float *n, float * out, int h, int w, int k) {
 
 __global__ matmul_1thread1row_k(float *m, float *n, float * out, int h, int w,  int k) {
     int row = blockIdx.x * blockDim.x + threadIdx.x;
-    if (r>=h) return; // out of bound
-    for (int col=0; col<size; col++){
+    if (row>=h) return; // out of bound
+    for (int col=0; col<k; col++){
         float dotval=0;
-        for (int i=0;i<w;i++){
+        for (int i=0;i<k;i++){
             dotval+= m[row*k+i] * n[i*k+col];
         }
-        out[r*w+c]=dotval;
+        out[row*k+c]=dotval;
     }
 }
 
