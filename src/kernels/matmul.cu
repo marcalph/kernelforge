@@ -22,7 +22,7 @@ void matmul_k(float *m, float *n, float * out, int h, int w, int k) {
 }
 
 
-__global__ matmul_1thread1row_k(float *m, float *n, float * out, int h, int w,  int k) {
+__global__  void matmul_1thread1row_k(float *m, float *n, float * out, int h, int w,  int k) {
     int row = blockIdx.x * blockDim.x + threadIdx.x;
     if (row>=h) return; // out of bound
     for (int col=0; col<k; col++){
