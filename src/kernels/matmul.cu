@@ -21,6 +21,22 @@ void matmul_k(float *m, float *n, float * out, int h, int w, int k) {
     out[r*w+c]=dotval;
 }
 
+
+__global__ matmul_1thread1row_k(float *m, float *n, float * out, int h, int w,  int k) {
+    int row = blockIdx.x * blockDim.x + threadIdx.x;
+    if (r>=h) return; // out of bound
+    for (int col=0; col<size; col++){
+        float dotval=0;
+        for (int i=0;i<w;i++){
+            dotval+= m[row*k+i] * n[i*k+col];
+        }
+        out[r*w+c]=dotval;
+    }
+}
+
+
+
+
 torch::Tensor matmul(torch::Tensor m, torch::Tensor n) {
     CHECK_INPUT(m); CHECK_INPUT(n);
 
