@@ -30,7 +30,7 @@ __global__ matmul_1thread1row_k(float *m, float *n, float * out, int h, int w,  
         for (int i=0;i<k;i++){
             dotval+= m[row*k+i] * n[i*k+col];
         }
-        out[row*k+c]=dotval;
+        out[row*k+col]=dotval;
     }
 }
 
