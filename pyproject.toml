@@ -10,6 +10,10 @@ dependencies = [
     "notebook>=7.5.4",
     "pip>=26.0.1",
     "pre-commit>=4.5.1",
+    "setuptools>=75.0.0,<81",
+    "tensorboard>=2.20.0",
+    "tensorboard-plugin-profile>=2.22.0",
     "torch>=2.10.0",
+    "torch-tb-profiler>=0.4.3",
     "torchvision>=0.25.0",
 ]
