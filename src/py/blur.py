@@ -3,7 +3,7 @@
 import os
 os.environ['CUDA_LAUNCH_BLOCKING']='1'
 import torch
-from torchvision.io import read_image, write_png
+from torchvision.io import read_image
 
 
 
