@@ -29,20 +29,25 @@ def get_sig(fname, src):
     res = re.findall(rf'^(.+\s+{fname}\s*\(.*?\))\s*\{{?$', src, re.MULTILINE)
     return res[0]+';' if res else None
 
-def compile_extension(cuda_source ,
-    cpp_source , 
-    funcs, name = None):
+def compile_extension(cuda_source, cpp_source=None, funcs=None, name=None):
     cuda_source = Path(cuda_source)
     if name is None:
-        name  = cuda_source.stem
-    cuda_source = cuda_source.read_text()
-    cuda_source = cuda_begin + cuda_source
+        name = cuda_source.stem
+    src = cuda_source.read_text()
+
+    if funcs is None:
+        funcs = [name]
+    if cpp_source is None:
+        cpp_source = [get_sig(f, src) for f in funcs]
+        cpp_source = [s for s in cpp_source if s is not None]
+
+    cuda_source = cuda_begin + src
 
     return load_inline(
         name=name,
         cpp_sources=cpp_source,
         cuda_sources=cuda_source,
-        functions=[name],
+        functions=funcs,
         with_cuda=True,
         extra_cuda_cflags=["-O2"],
         verbose=True,
