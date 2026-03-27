@@ -1,6 +1,6 @@
 from torch.utils.cpp_extension import load_inline
 from pathlib import Path
-
+import re
 
 cuda_begin = r"""
 #include <c10/cuda/CUDAException.h>
@@ -22,6 +22,12 @@ inline void gpuAssert(cudaError_t code, const char *file, int line, bool abort=t
 __host__ __device__ inline unsigned int cdiv(unsigned int a, unsigned int b) {return (a+b-1)/b;}
 """
 
+
+
+
+def get_sig(fname, src):
+    res = re.findall(rf'^(.+\s+{fname}\s*\(.*?\))\s*\{{?$', src, re.MULTILINE)
+    return res[0]+';' if res else None
 
 def compile_extension(cuda_source ,
     cpp_source , 
