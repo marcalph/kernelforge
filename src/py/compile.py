@@ -1,6 +1,7 @@
 from torch.utils.cpp_extension import load_inline
 from pathlib import Path
 import re
+from typing import Any
 
 cuda_begin = r'''
 #include <torch/extension.h>
@@ -24,11 +25,11 @@ __host__ __device__ inline unsigned int cdiv(unsigned int a, unsigned int b) { r
 
 
 def get_sig(fname, src):
-    res = re.findall(rf'^(.+\s+{fname}\s*\(.*?\))\s*\{{?$', src, re.MULTILINE)
+    res = re.findall(rf'^(.+\s+{fname})\s*{{?\s*$', src, re.MULTILINE)
     return res[0]+';' if res else None
 
 
-def load_cuda_cell(cuda_src, cpp_src, funcs, opt=False, verbose=False, name=None):
+def load_cuda_string(cuda_src:str, cpp_src:str, funcs:list[Any], opt=False, verbose=False, name=None):
     "Simple wrapper for torch.utils.cpp_extension.load_inline"
     if name is None: name = funcs[0]
     return load_inline(cuda_sources=[cuda_src], cpp_sources=[cpp_src], functions=funcs,
