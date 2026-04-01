@@ -25,7 +25,7 @@ __host__ __device__ inline unsigned int cdiv(unsigned int a, unsigned int b) { r
 
 
 def get_sig(fname, src):
-    res = re.findall(rf'^(.+\s+{fname})\s*{{?\s*$', src, re.MULTILINE)
+    res = re.findall(rf'^(.+\s+{fname}\b.*?)\s*{{?\s*$', src, re.MULTILINE) #weird curly bracket escape bc fstring
     return res[0]+';' if res else None
 
 
